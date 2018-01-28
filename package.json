@@ -1,0 +1,14 @@
+{
+  "name": "anki-spanish-conjugation",
+  "version": "0.1.0",
+  "description": "Flash cards for spansh conjugation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Fairhurst <nathan.p3pictures@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "anki-apkg-export": "^4.0.2"
+  }
+}
