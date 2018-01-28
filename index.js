@@ -23,7 +23,7 @@ const verb = (
   infinitive,
   present_participle,
   past_participle,
-  imperative_negative,
+  imperative_positive_tú,
   present,
   imperfect,
   preterite,
@@ -35,7 +35,7 @@ const verb = (
   infinitive,
   present_participle,
   past_participle,
-  imperative_negative,
+  imperative_positive_tú,
   simple_tenses: {
     present,
     imperfect,
