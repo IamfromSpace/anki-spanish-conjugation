@@ -19,6 +19,27 @@ const tense = (yo, tú, usted, nosotros, ustedes) => ({
   ustedes
 });
 
+const regular_present_ar = s =>
+  tense(s + "o", s + "as", s + "a", s + "amos", s + "an");
+
+const regular_imperfect_ar = s =>
+  tense(s + "aba", s + "abas", s + "aba", s + "ábamos", s + "aban");
+
+const regular_preterite_ar = s =>
+  tense(s + "é", s + "aste", s + "ó", s + "amos", s + "aron");
+
+const regular_future_ar = s =>
+  tense(s + "aré", s + "arás", s + "ará", s + "aremos", s + "arán");
+
+const regular_conditional_ar = s =>
+  tense(s + "aría", s + "arías", s + "aría", s + "aríamos", s + "arían");
+
+const regular_present_subjunctive_ar = s =>
+  tense(s + "e", s + "es", s + "e", s + "emos", s + "en");
+
+const regular_imperfect_subjunctive_ar = s =>
+  tense(s + "ara", s + "aras", s + "ara", s + "áramos", s + "aran");
+
 const verb = (
   infinitive,
   present_participle,
@@ -46,6 +67,21 @@ const verb = (
     imperfect_subjunctive
   }
 });
+
+regular_verb_ar = s =>
+  verb(
+    s + "ar",
+    s + "ando",
+    s + "ado",
+    s + "a",
+    regular_present_ar(s),
+    regular_imperfect_ar(s),
+    regular_preterite_ar(s),
+    regular_future_ar(s),
+    regular_conditional_ar(s),
+    regular_present_subjunctive_ar(s),
+    regular_imperfect_subjunctive_ar(s)
+  );
 
 const card = (front, back, tags) => ({
   front,
@@ -89,31 +125,14 @@ const saveDeck = deck =>
   });
 
 const verbs = [
-  /*
-  present_participle,
-  past_participle,
-  imperative,
-  present,
-  imperfect,
-  preterite,
-  future,
-  conditional,
-  present_subjunctive,
-  imperfect_subjunctive
-  */
-  verb(
-    "hablar",
-    "hablando",
-    "hablado",
-    "hables",
-    tense("hablo", "hablas", "habla", "hablamos", "hablan"),
-    tense("hablaba", "hablabas", "hablaba", "hablábamos", "hablaban"),
-    tense("hablé", "hablaste", "habló", "hablamos", "hablaron"),
-    tense("hablaré", "hablarás", "hablará", "hablaremos", "hablarán"),
-    tense("hablaría", "hablarías", "hablaría", "hablaríamos", "hablarían"),
-    tense("hable", "hables", "hable", "hablemos", "hablen"),
-    tense("hablara", "hablaras", "hablara", "habláramos", "hablaran")
-  )
+  regular_verb_ar("habl"),
+  regular_verb_ar("camin"),
+  regular_verb_ar("pas"),
+  regular_verb_ar("qued"),
+  regular_verb_ar("llev"),
+  regular_verb_ar("dej"),
+  regular_verb_ar("llam"),
+  regular_verb_ar("tom")
 ];
 
 const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
