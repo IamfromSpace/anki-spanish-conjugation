@@ -196,13 +196,17 @@ const verbToCards = verb =>
     )
     .reduce((p, n) => p.concat(n), []);
 
-const makeDeck = (deckName, cards) =>
-  // TODO: Add images
-  // apkg.addMedia('anki.png', fs.readFileSync('assets/anki.png'));
-  cards.reduce((a, { front, back, tags }) => {
-    a.addCard(front, back, { tags });
-    return a;
-  }, new AnkiExport(deckName));
+const makeDeck = (deckName, cards, image_names) =>
+  image_names.reduce(
+    (a, name) => {
+      a.addMedia(`${name}.png`, fs.readFileSync(`assets/${name}.png`));
+      return a;
+    },
+    cards.reduce((a, { front, back, tags }) => {
+      a.addCard(front, back, { tags });
+      return a;
+    }, new AnkiExport(deckName))
+  );
 
 const saveDeck = deck =>
   deck.save().then(zip => {
@@ -233,6 +237,8 @@ const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
 console.log(cards);
 console.log(cards.length);
 
-const deck = makeDeck("Spanish Conjugation", cards);
+const image_names = ["yo", "tú", "nosotros", "ustedes"];
+
+const deck = makeDeck("Spanish Conjugation", cards, image_names);
 
 saveDeck(deck).then(() => console.log("output written successfully!"));
