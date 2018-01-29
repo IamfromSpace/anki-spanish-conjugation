@@ -3,7 +3,7 @@ const AnkiExport = require("anki-apkg-export").default;
 
 const tenseDesc = {
   present: "cada día",
-  imperfect: "hace varios año",
+  imperfect: "hace varios años",
   preterite: "ayer",
   future: "mañana",
   conditional: "hoy si...",
