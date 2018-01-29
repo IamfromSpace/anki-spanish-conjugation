@@ -154,6 +154,20 @@ regular_verb_ir = s =>
     regular_imperfect_subjunctive_ir(s)
   );
 
+regular_verb = infinitive => {
+  const stem = infinitive.slice(0, infinitive.length - 2);
+  switch (infinitive.slice(-2)) {
+    case "ar":
+      return regular_verb_ar(stem);
+    case "er":
+      return regular_verb_er(stem);
+    case "ir":
+      return regular_verb_ir(stem);
+    default:
+      throw new Error("invalid verb ending!");
+  }
+};
+
 const card = (front, back, tags) => ({
   front,
   back,
@@ -196,17 +210,28 @@ const saveDeck = deck =>
   });
 
 const verbs = [
-  regular_verb_ar("habl"),
-  regular_verb_ar("camin"),
-  regular_verb_ar("pas"),
-  regular_verb_ar("qued"),
-  regular_verb_ar("llev"),
-  regular_verb_ar("dej"),
-  regular_verb_ar("llam"),
-  regular_verb_ar("tom")
+  regular_verb("hablar"),
+  regular_verb("caminar"),
+  regular_verb("llevar"),
+  regular_verb("dejar"),
+  regular_verb("llamar"),
+  regular_verb("comer"),
+  regular_verb("aprender"),
+  regular_verb("beber"),
+  regular_verb("comprender"),
+  regular_verb("correr"),
+  regular_verb("responder"),
+  regular_verb("vivir"),
+  regular_verb("decidir"),
+  regular_verb("insistir"),
+  regular_verb("ocurrir"),
+  regular_verb("permitir"),
+  regular_verb("recibir")
 ];
 
 const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
+console.log(cards);
+console.log(cards.length);
 
 const deck = makeDeck("Spanish Conjugation", cards);
 
