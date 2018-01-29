@@ -179,7 +179,7 @@ const simpleTenseToCards = (infinitive, tense_name, tense) =>
     card(
       `${
         tenseDesc[tense_name]
-      }, ${subject}, ${infinitive}<imc src="${tense_name}.png" /><img src="${subject}.png" />`,
+      }, ${subject}, ${infinitive}<img src="${tense_name}.png" /><img src="${subject}.png" />`,
       tense[subject],
       [subject, tense_name, infinitive, `-${infinitive.slice(-2)}`]
     )
