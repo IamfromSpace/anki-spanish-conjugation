@@ -19,6 +19,7 @@ const tense = (yo, tú, usted, nosotros, ustedes) => ({
   ustedes
 });
 
+// -ar
 const regular_present_ar = s =>
   tense(s + "o", s + "as", s + "a", s + "amos", s + "an");
 
@@ -39,6 +40,46 @@ const regular_present_subjunctive_ar = s =>
 
 const regular_imperfect_subjunctive_ar = s =>
   tense(s + "ara", s + "aras", s + "ara", s + "áramos", s + "aran");
+
+// -er
+const regular_present_er = s =>
+  tense(s + "o", s + "es", s + "e", s + "emos", s + "en");
+
+const regular_imperfect_er = s =>
+  tense(s + "ía", s + "ías", s + "ía", s + "íamos", s + "ían");
+
+const regular_preterite_er = s =>
+  tense(s + "í", s + "iste", s + "ió", s + "imos", s + "ieron");
+
+const regular_future_er = s =>
+  tense(s + "eré", s + "erás", s + "erá", s + "eremos", s + "erán");
+
+const regular_conditional_er = s =>
+  tense(s + "ería", s + "erías", s + "ería", s + "eríamos", s + "erían");
+
+const regular_present_subjunctive_er = s =>
+  tense(s + "a", s + "as", s + "a", s + "amos", s + "an");
+
+const regular_imperfect_subjunctive_er = s =>
+  tense(s + "iera", s + "ieras", s + "iera", s + "iéramos", s + "ieran");
+
+// -ir
+const regular_present_ir = s =>
+  tense(s + "o", s + "es", s + "e", s + "imos", s + "en");
+
+const regular_imperfect_ir = regular_imperfect_er;
+
+const regular_preterite_ir = regular_preterite_er;
+
+const regular_future_ir = s =>
+  tense(s + "iré", s + "irás", s + "irá", s + "iremos", s + "irán");
+
+const regular_conditional_ir = s =>
+  tense(s + "iría", s + "irías", s + "iría", s + "iríamos", s + "irían");
+
+const regular_present_subjunctive_ir = regular_present_subjunctive_er;
+
+const regular_imperfect_subjunctive_ir = regular_imperfect_subjunctive_er;
 
 const verb = (
   infinitive,
@@ -81,6 +122,36 @@ regular_verb_ar = s =>
     regular_conditional_ar(s),
     regular_present_subjunctive_ar(s),
     regular_imperfect_subjunctive_ar(s)
+  );
+
+regular_verb_er = s =>
+  verb(
+    s + "er",
+    s + "iendo",
+    s + "ido",
+    s + "e",
+    regular_present_er(s),
+    regular_imperfect_er(s),
+    regular_preterite_er(s),
+    regular_future_er(s),
+    regular_conditional_er(s),
+    regular_present_subjunctive_er(s),
+    regular_imperfect_subjunctive_er(s)
+  );
+
+regular_verb_ir = s =>
+  verb(
+    s + "ir",
+    s + "iendo",
+    s + "ido",
+    s + "e",
+    regular_present_ir(s),
+    regular_imperfect_ir(s),
+    regular_preterite_ir(s),
+    regular_future_ir(s),
+    regular_conditional_ir(s),
+    regular_present_subjunctive_ir(s),
+    regular_imperfect_subjunctive_ir(s)
   );
 
 const card = (front, back, tags) => ({
