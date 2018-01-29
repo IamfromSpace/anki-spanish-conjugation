@@ -237,7 +237,20 @@ const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
 console.log(cards);
 console.log(cards.length);
 
-const image_names = ["yo", "tú", "nosotros", "ustedes"];
+const image_names = [
+  "yo",
+  "tú",
+  "usted",
+  "nosotros",
+  "ustedes",
+  "present",
+  "imperfect",
+  "preterite",
+  "future",
+  "conditional",
+  "present_subjunctive",
+  "imperfect_subjunctive"
+];
 
 const deck = makeDeck("Spanish Conjugation", cards, image_names);
 
