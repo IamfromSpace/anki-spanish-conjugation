@@ -177,9 +177,9 @@ const card = (front, back, tags) => ({
 const simpleTenseToCards = (infinitive, tense_name, tense) =>
   Object.keys(tense).map(subject =>
     card(
-      `${
+      `<div style="font-size:36px; font-weight:bold">${infinitive}</div><img src="${tense_name}.png" /><img src="${subject}.png" /><div style="font-size:12px; font-style:italic">(${
         tenseDesc[tense_name]
-      }, ${subject}, ${infinitive}<img src="${tense_name}.png" /><img src="${subject}.png" />`,
+      }, ${subject})</div>`,
       tense[subject],
       [subject, tense_name, infinitive, `-${infinitive.slice(-2)}`]
     )
