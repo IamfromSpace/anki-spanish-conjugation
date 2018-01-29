@@ -7,8 +7,8 @@ const tenseDesc = {
   preterite: "ayer",
   future: "mañana",
   conditional: "hoy si...",
-  present_subjunctive: "hoy quiero que...",
-  imperfect_subjunctive: "ayer yo quería que..."
+  present_subjunctive: "quiero que...",
+  imperfect_subjunctive: "yo quería que..."
 };
 
 const tense = (yo, tú, usted, nosotros, ustedes) => ({
