@@ -13,11 +13,11 @@ const tenseDesc = {
   present_subjunctive: "quiero que...",
   imperfect_subjunctive: "yo quería que...",
   present_perfect: "justamente recientemente",
-  past_perfect: "antes...",
+  pluperfect: "antes...",
   future_perfect: "en la mañana, pero antes...",
   conditional_perfect: "ayer si...",
   present_perfect_subjunctive: "No creo que justamente recientemente...",
-  past_perfect_subjunctive: "Yo no creía que..."
+  pluperfect_subjunctive: "Yo no creía que..."
 };
 
 const tense = (yo, tú, usted, nosotros, ustedes) => ({
@@ -221,7 +221,7 @@ const verb_to_compound_tenses = verb => {
   const past_pure = tense_pure(" " + verb.past_participle);
   return {
     present_perfect: tense_mappend(haber.simple_tenses.present, past_pure),
-    past_perfect: tense_mappend(haber.simple_tenses.imperfect, past_pure),
+    pluperfect: tense_mappend(haber.simple_tenses.imperfect, past_pure),
     // omitted due to rarity
     // preterite_perfect: tense_mappend(haber.simple_tenses.preterite, past_pure),
     future_perfect: tense_mappend(haber.simple_tenses.future, past_pure),
@@ -233,7 +233,7 @@ const verb_to_compound_tenses = verb => {
       haber.simple_tenses.present_subjunctive,
       past_pure
     ),
-    past_perfect_subjunctive: tense_mappend(
+    pluperfect_subjunctive: tense_mappend(
       haber.simple_tenses.imperfect_subjunctive,
       past_pure
     )
@@ -309,7 +309,13 @@ const image_names = [
   "future",
   "conditional",
   "present_subjunctive",
-  "imperfect_subjunctive"
+  "imperfect_subjunctive",
+  "present_perfect",
+  "pluperfect",
+  "future_perfect",
+  "conditional_perfect",
+  "present_perfect_subjunctive",
+  "pluperfect_subjunctive"
 ];
 
 const deck = makeDeck("Spanish Conjugation", cards, image_names);
