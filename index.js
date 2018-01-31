@@ -1,3 +1,6 @@
+// Hack to get more memory out of underlying sql.js module
+// https://github.com/kripken/sql.js/issues/113#issuecomment-317877596
+Module = { TOTAL_MEMORY: Math.pow(2, 25) - 1 };
 const fs = require("fs");
 const AnkiExport = require("anki-apkg-export").default;
 
