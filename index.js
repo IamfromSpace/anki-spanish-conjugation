@@ -11,7 +11,13 @@ const tenseDesc = {
   future: "mañana",
   conditional: "hoy si...",
   present_subjunctive: "quiero que...",
-  imperfect_subjunctive: "yo quería que..."
+  imperfect_subjunctive: "yo quería que...",
+  present_perfect: "justamente recientemente",
+  past_perfect: "antes...",
+  future_perfect: "en la mañana, pero antes...",
+  conditional_perfect: "ayer si...",
+  present_perfect_subjunctive: "No creo que justamente recientemente...",
+  past_perfect_subjunctive: "Yo no creía que..."
 };
 
 const tense = (yo, tú, usted, nosotros, ustedes) => ({
@@ -20,6 +26,15 @@ const tense = (yo, tú, usted, nosotros, ustedes) => ({
   usted,
   nosotros,
   ustedes
+});
+
+const tense_pure = s => tense(s, s, s, s, s);
+const tense_mappend = (a, b) => ({
+  yo: a.yo + b.yo,
+  tú: a.tú + b.tú,
+  usted: a.usted + b.usted,
+  nosotros: a.nosotros + b.nosotros,
+  ustedes: a.ustedes + b.ustedes
 });
 
 // -ar
@@ -157,6 +172,20 @@ regular_verb_ir = s =>
     regular_imperfect_subjunctive_ir(s)
   );
 
+const haber = verb(
+  "haber",
+  "habiendo",
+  "habido",
+  "hé",
+  tense("he", "has", "ha", "hemos", "han"),
+  tense("había", "habías", "había", "habíamos", "habían"),
+  tense("hube", "hubiste", "hubo", "hubimos", "hubieron"),
+  tense("habré", "habrás", "habrá", "habremos", "habrán"),
+  tense("habría", "habrías", "habría", "habríamos", "habrían"),
+  tense("haya", "hayas", "haya", "hayamos", "hayan"),
+  tense("hubiera", "hubieras", "hubiera", "hubiéramos", "hubieran")
+);
+
 regular_verb = infinitive => {
   const stem = infinitive.slice(0, infinitive.length - 2);
   switch (infinitive.slice(-2)) {
@@ -188,16 +217,43 @@ const simpleTenseToCards = (infinitive, tense_name, tense) =>
     )
   );
 
-const verbToCards = verb =>
-  Object.keys(verb.simple_tenses)
-    .map(tense_name =>
-      simpleTenseToCards(
-        verb.infinitive,
-        tense_name,
-        verb.simple_tenses[tense_name]
-      )
+const verb_to_compound_tenses = verb => {
+  const past_pure = tense_pure(" " + verb.past_participle);
+  return {
+    present_perfect: tense_mappend(haber.simple_tenses.present, past_pure),
+    past_perfect: tense_mappend(haber.simple_tenses.imperfect, past_pure),
+    // omitted due to rarity
+    // preterite_perfect: tense_mappend(haber.simple_tenses.preterite, past_pure),
+    future_perfect: tense_mappend(haber.simple_tenses.future, past_pure),
+    conditional_perfect: tense_mappend(
+      haber.simple_tenses.conditional,
+      past_pure
+    ),
+    present_perfect_subjunctive: tense_mappend(
+      haber.simple_tenses.present_subjunctive,
+      past_pure
+    ),
+    past_perfect_subjunctive: tense_mappend(
+      haber.simple_tenses.imperfect_subjunctive,
+      past_pure
     )
-    .reduce((p, n) => p.concat(n), []);
+  };
+};
+
+const verbToCards = verb => {
+  const simple_cards = Object.keys(verb.simple_tenses).map(tense_name =>
+    simpleTenseToCards(
+      verb.infinitive,
+      tense_name,
+      verb.simple_tenses[tense_name]
+    )
+  );
+  const compound_tenses = verb_to_compound_tenses(verb);
+  const compound_cards = Object.keys(compound_tenses).map(tense_name =>
+    simpleTenseToCards(verb.infinitive, tense_name, compound_tenses[tense_name])
+  );
+  return simple_cards.concat(compound_cards).reduce((p, n) => p.concat(n), []);
+};
 
 const makeDeck = (deckName, cards, image_names) =>
   image_names.reduce(
@@ -233,7 +289,8 @@ const verbs = [
   regular_verb("insistir"),
   regular_verb("ocurrir"),
   regular_verb("permitir"),
-  regular_verb("recibir")
+  regular_verb("recibir"),
+  haber
 ];
 
 const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
