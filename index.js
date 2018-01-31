@@ -17,7 +17,7 @@ const tenseDesc = {
   future_perfect: "en la mañana, pero antes...",
   conditional_perfect: "ayer si...",
   present_perfect_subjunctive: "No creo que justamente recientemente...",
-  pluperfect_subjunctive: "Yo no creía que..."
+  pluperfect_subjunctive: "Yo no creía que... antes..."
 };
 
 const tense = (yo, tú, usted, nosotros, ustedes) => ({
