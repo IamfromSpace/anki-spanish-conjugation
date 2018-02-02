@@ -4,7 +4,7 @@ Module = { TOTAL_MEMORY: Math.pow(2, 25) - 1 };
 const fs = require("fs");
 const AnkiExport = require("anki-apkg-export").default;
 
-const tenseDesc = {
+const tense_desc = {
   present: "cada día",
   imperfect: "hace varios años",
   preterite: "ayer",
@@ -206,11 +206,11 @@ const card = (front, back, tags) => ({
   tags
 });
 
-const simpleTenseToCards = (infinitive, tense_name, tense) =>
+const simple_tense_to_cards = (infinitive, tense_name, tense) =>
   Object.keys(tense).map(subject =>
     card(
       `<div style="font-size:36px; font-weight:bold">${infinitive}</div><img src="${tense_name}.png" /><img src="${subject}.png" /><div style="font-size:12px; font-style:italic">(${
-        tenseDesc[tense_name]
+        tense_desc[tense_name]
       }, ${subject})</div>`,
       tense[subject],
       [subject, tense_name, infinitive, `-${infinitive.slice(-2)}`]
@@ -240,9 +240,9 @@ const verb_to_compound_tenses = verb => {
   };
 };
 
-const verbToCards = verb => {
+const verb_to_cards = verb => {
   const simple_cards = Object.keys(verb.simple_tenses).map(tense_name =>
-    simpleTenseToCards(
+    simple_tense_to_cards(
       verb.infinitive,
       tense_name,
       verb.simple_tenses[tense_name]
@@ -250,12 +250,16 @@ const verbToCards = verb => {
   );
   const compound_tenses = verb_to_compound_tenses(verb);
   const compound_cards = Object.keys(compound_tenses).map(tense_name =>
-    simpleTenseToCards(verb.infinitive, tense_name, compound_tenses[tense_name])
+    simple_tense_to_cards(
+      verb.infinitive,
+      tense_name,
+      compound_tenses[tense_name]
+    )
   );
   return simple_cards.concat(compound_cards).reduce((p, n) => p.concat(n), []);
 };
 
-const makeDeck = (deckName, cards, image_names) =>
+const make_deck = (deck_name, cards, image_names) =>
   image_names.reduce(
     (a, name) => {
       a.addMedia(`${name}.png`, fs.readFileSync(`assets/${name}.png`));
@@ -264,10 +268,10 @@ const makeDeck = (deckName, cards, image_names) =>
     cards.reduce((a, { front, back, tags }) => {
       a.addCard(front, back, { tags });
       return a;
-    }, new AnkiExport(deckName))
+    }, new AnkiExport(deck_name))
   );
 
-const saveDeck = deck =>
+const save_deck = deck =>
   deck.save().then(zip => {
     fs.writeFileSync("./output.apkg", zip, "binary");
   });
@@ -293,7 +297,7 @@ const verbs = [
   haber
 ];
 
-const cards = verbs.map(verbToCards).reduce((p, n) => p.concat(n), []);
+const cards = verbs.map(verb_to_cards).reduce((p, n) => p.concat(n), []);
 console.log(cards);
 console.log(cards.length);
 
@@ -318,6 +322,6 @@ const image_names = [
   "pluperfect_subjunctive"
 ];
 
-const deck = makeDeck("Spanish Conjugation", cards, image_names);
+const deck = make_deck(`Spanish Conjugation`, cards, image_names);
 
-saveDeck(deck).then(() => console.log("output written successfully!"));
+save_deck(deck).then(() => console.log("output written successfully!"));
