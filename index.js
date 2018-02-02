@@ -28,72 +28,84 @@ const tense = (yo, tú, usted, nosotros, ustedes) => ({
   ustedes
 });
 
-const tense_pure = s => tense(s, s, s, s, s);
-const tense_mappend = (a, b) => ({
-  yo: a.yo + b.yo,
-  tú: a.tú + b.tú,
-  usted: a.usted + b.usted,
-  nosotros: a.nosotros + b.nosotros,
-  ustedes: a.ustedes + b.ustedes
+const tense_map = fn => t => ({
+  yo: fn(t.yo),
+  tú: fn(t.tú),
+  usted: fn(t.usted),
+  nosotros: fn(t.nosotros),
+  ustedes: fn(t.ustedes)
 });
 
+const tense_append = tense => stem => tense_map(ending => stem + ending)(tense);
+
 // -ar
-const regular_present_ar = s =>
-  tense(s + "o", s + "as", s + "a", s + "amos", s + "an");
+const regular_present_ar = tense_append(tense("o", "as", "a", "amos", "an"));
 
-const regular_imperfect_ar = s =>
-  tense(s + "aba", s + "abas", s + "aba", s + "ábamos", s + "aban");
+const regular_imperfect_ar = tense_append(
+  tense("aba", "abas", "aba", "ábamos", "aban")
+);
 
-const regular_preterite_ar = s =>
-  tense(s + "é", s + "aste", s + "ó", s + "amos", s + "aron");
+const regular_preterite_ar = tense_append(
+  tense("é", "aste", "ó", "amos", "aron")
+);
 
-const regular_future_ar = s =>
-  tense(s + "aré", s + "arás", s + "ará", s + "aremos", s + "arán");
+const regular_future_ar = tense_append(
+  tense("aré", "arás", "ará", "aremos", "arán")
+);
 
-const regular_conditional_ar = s =>
-  tense(s + "aría", s + "arías", s + "aría", s + "aríamos", s + "arían");
+const regular_conditional_ar = tense_append(
+  tense("aría", "arías", "aría", "aríamos", "arían")
+);
 
-const regular_present_subjunctive_ar = s =>
-  tense(s + "e", s + "es", s + "e", s + "emos", s + "en");
+const regular_present_subjunctive_ar = tense_append(
+  tense("e", "es", "e", "emos", "en")
+);
 
-const regular_imperfect_subjunctive_ar = s =>
-  tense(s + "ara", s + "aras", s + "ara", s + "áramos", s + "aran");
+const regular_imperfect_subjunctive_ar = tense_append(
+  tense("ara", "aras", "ara", "áramos", "aran")
+);
 
 // -er
-const regular_present_er = s =>
-  tense(s + "o", s + "es", s + "e", s + "emos", s + "en");
+const regular_present_er = tense_append(tense("o", "es", "e", "emos", "en"));
 
-const regular_imperfect_er = s =>
-  tense(s + "ía", s + "ías", s + "ía", s + "íamos", s + "ían");
+const regular_imperfect_er = tense_append(
+  tense("ía", "ías", "ía", "íamos", "ían")
+);
 
-const regular_preterite_er = s =>
-  tense(s + "í", s + "iste", s + "ió", s + "imos", s + "ieron");
+const regular_preterite_er = tense_append(
+  tense("í", "iste", "ió", "imos", "ieron")
+);
 
-const regular_future_er = s =>
-  tense(s + "eré", s + "erás", s + "erá", s + "eremos", s + "erán");
+const regular_future_er = tense_append(
+  tense("eré", "erás", "erá", "eremos", "erán")
+);
 
-const regular_conditional_er = s =>
-  tense(s + "ería", s + "erías", s + "ería", s + "eríamos", s + "erían");
+const regular_conditional_er = tense_append(
+  tense("ería", "erías", "ería", "eríamos", "erían")
+);
 
-const regular_present_subjunctive_er = s =>
-  tense(s + "a", s + "as", s + "a", s + "amos", s + "an");
+const regular_present_subjunctive_er = tense_append(
+  tense("a", "as", "a", "amos", "an")
+);
 
-const regular_imperfect_subjunctive_er = s =>
-  tense(s + "iera", s + "ieras", s + "iera", s + "iéramos", s + "ieran");
+const regular_imperfect_subjunctive_er = tense_append(
+  tense("iera", "ieras", "iera", "iéramos", "ieran")
+);
 
 // -ir
-const regular_present_ir = s =>
-  tense(s + "o", s + "es", s + "e", s + "imos", s + "en");
+const regular_present_ir = tense_append(tense("o", "es", "e", "imos", "en"));
 
 const regular_imperfect_ir = regular_imperfect_er;
 
 const regular_preterite_ir = regular_preterite_er;
 
-const regular_future_ir = s =>
-  tense(s + "iré", s + "irás", s + "irá", s + "iremos", s + "irán");
+const regular_future_ir = tense_append(
+  tense("iré", "irás", "irá", "iremos", "irán")
+);
 
-const regular_conditional_ir = s =>
-  tense(s + "iría", s + "irías", s + "iría", s + "iríamos", s + "irían");
+const regular_conditional_ir = tense_append(
+  tense("iría", "irías", "iría", "iríamos", "irían")
+);
 
 const regular_present_subjunctive_ir = regular_present_subjunctive_er;
 
@@ -218,24 +230,19 @@ const simple_tense_to_cards = (infinitive, tense_name, tense) =>
   );
 
 const verb_to_compound_tenses = verb => {
-  const past_pure = tense_pure(" " + verb.past_participle);
+  const add_past_particple = tense_map(x => x + " " + verb.past_participle);
   return {
-    present_perfect: tense_mappend(haber.simple_tenses.present, past_pure),
-    pluperfect: tense_mappend(haber.simple_tenses.imperfect, past_pure),
+    present_perfect: add_past_particple(haber.simple_tenses.present),
+    pluperfect: add_past_particple(haber.simple_tenses.imperfect),
     // omitted due to rarity
-    // preterite_perfect: tense_mappend(haber.simple_tenses.preterite, past_pure),
-    future_perfect: tense_mappend(haber.simple_tenses.future, past_pure),
-    conditional_perfect: tense_mappend(
-      haber.simple_tenses.conditional,
-      past_pure
+    // preterite_perfect: add_past_particple(haber.simple_tenses.preterite),
+    future_perfect: add_past_particple(haber.simple_tenses.future),
+    conditional_perfect: add_past_particple(haber.simple_tenses.conditional),
+    present_perfect_subjunctive: add_past_particple(
+      haber.simple_tenses.present_subjunctive
     ),
-    present_perfect_subjunctive: tense_mappend(
-      haber.simple_tenses.present_subjunctive,
-      past_pure
-    ),
-    pluperfect_subjunctive: tense_mappend(
-      haber.simple_tenses.imperfect_subjunctive,
-      past_pure
+    pluperfect_subjunctive: add_past_particple(
+      haber.simple_tenses.imperfect_subjunctive
     )
   };
 };
