@@ -50,5 +50,12 @@ describe("ortho_correct", () => {
       expect(ortho_correct("leer")("imos")).to.equal("leímos");
       expect(ortho_correct("oír")("imos")).to.equal("oímos");
     });
+
+    it("should remove accents in monosyllabic forms", () => {
+      expect(ortho_correct("liar")("é")).to.equal("lie");
+      expect(ortho_correct("liar")("ó")).to.equal("lio");
+      expect(ortho_correct("ver")("í")).to.equal("vi");
+      expect(ortho_correct("ver")("ío")).to.equal("vio");
+    });
   });
 });

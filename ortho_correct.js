@@ -34,16 +34,36 @@ const stem_correct = infinitive => ending => {
   return stem;
 };
 
+const unaccent = word =>
+  word
+    .replace(/í/g, "i")
+    .replace(/é/g, "e")
+    .replace(/á/g, "a")
+    .replace(/ó/g, "o")
+    .replace(/ú/g, "u");
+
+const get_syllables = word =>
+  lorca(word)
+    .syllables()
+    .get();
+
 const ending_correct = stem => ending => {
   if (
     /^[i]/.test(ending) && // must begin with an i
     !(/[íéáóú]/.test(stem) || /[íéáóú]/.test(ending)) && // must not have different stress
     /[eéaáoó]$/.test(stem) && // stem must end with an a/e/o
-    lorca(ending)
-      .syllables()
-      .get().length === 2 // stress must fall on the i
+    get_syllables(ending).length === 2 // stress must fall on the i
   ) {
     return "í" + ending.slice(1, ending.length);
+  }
+
+  const stem_no_accents = unaccent(stem);
+  const ending_no_accents = unaccent(ending);
+  const is_monosyllabic =
+    get_syllables(stem_no_accents + ending_no_accents).length === 1;
+
+  if (is_monosyllabic) {
+    return ending_no_accents;
   }
   return ending;
 };
