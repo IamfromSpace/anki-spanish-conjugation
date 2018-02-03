@@ -3,6 +3,7 @@
 Module = { TOTAL_MEMORY: Math.pow(2, 25) - 1 };
 const fs = require("fs");
 const AnkiExport = require("anki-apkg-export").default;
+const { ortho_correct } = require("./ortho_correct");
 
 const tense_desc = {
   present: "cada día",
@@ -36,7 +37,8 @@ const tense_map = fn => t => ({
   ustedes: fn(t.ustedes)
 });
 
-const tense_append = tense => stem => tense_map(ending => stem + ending)(tense);
+const tense_append = tense => infinitive =>
+  tense_map(ending => ortho_correct(infinitive)(ending))(tense);
 
 // -ar
 const regular_present_ar = tense_append(tense("o", "as", "a", "amos", "an"));
@@ -139,50 +141,58 @@ const verb = (
   }
 });
 
-regular_verb_ar = s =>
-  verb(
-    s + "ar",
-    s + "ando",
-    s + "ado",
-    s + "a",
-    regular_present_ar(s),
-    regular_imperfect_ar(s),
-    regular_preterite_ar(s),
-    regular_future_ar(s),
-    regular_conditional_ar(s),
-    regular_present_subjunctive_ar(s),
-    regular_imperfect_subjunctive_ar(s)
-  );
+const get_stem = infinitive => infinitive.slice(0, infinitive.length - 2);
 
-regular_verb_er = s =>
-  verb(
-    s + "er",
-    s + "iendo",
-    s + "ido",
-    s + "e",
-    regular_present_er(s),
-    regular_imperfect_er(s),
-    regular_preterite_er(s),
-    regular_future_er(s),
-    regular_conditional_er(s),
-    regular_present_subjunctive_er(s),
-    regular_imperfect_subjunctive_er(s)
+regular_verb_ar = infinitive => {
+  const stem = get_stem(infinitive);
+  return verb(
+    infinitive,
+    stem + "ando",
+    stem + "ado",
+    stem + "a",
+    regular_present_ar(infinitive),
+    regular_imperfect_ar(infinitive),
+    regular_preterite_ar(infinitive),
+    regular_future_ar(infinitive),
+    regular_conditional_ar(infinitive),
+    regular_present_subjunctive_ar(infinitive),
+    regular_imperfect_subjunctive_ar(infinitive)
   );
+};
 
-regular_verb_ir = s =>
-  verb(
-    s + "ir",
-    s + "iendo",
-    s + "ido",
-    s + "e",
-    regular_present_ir(s),
-    regular_imperfect_ir(s),
-    regular_preterite_ir(s),
-    regular_future_ir(s),
-    regular_conditional_ir(s),
-    regular_present_subjunctive_ir(s),
-    regular_imperfect_subjunctive_ir(s)
+regular_verb_er = infinitive => {
+  const stem = get_stem(infinitive);
+  return verb(
+    infinitive,
+    stem + "iendo",
+    stem + "ido",
+    stem + "e",
+    regular_present_er(infinitive),
+    regular_imperfect_er(infinitive),
+    regular_preterite_er(infinitive),
+    regular_future_er(infinitive),
+    regular_conditional_er(infinitive),
+    regular_present_subjunctive_er(infinitive),
+    regular_imperfect_subjunctive_er(infinitive)
   );
+};
+
+regular_verb_ir = infinitive => {
+  const stem = get_stem(infinitive);
+  return verb(
+    stem + "ir",
+    stem + "iendo",
+    stem + "ido",
+    stem + "e",
+    regular_present_ir(infinitive),
+    regular_imperfect_ir(infinitive),
+    regular_preterite_ir(infinitive),
+    regular_future_ir(infinitive),
+    regular_conditional_ir(infinitive),
+    regular_present_subjunctive_ir(infinitive),
+    regular_imperfect_subjunctive_ir(infinitive)
+  );
+};
 
 const haber = verb(
   "haber",
@@ -199,14 +209,13 @@ const haber = verb(
 );
 
 regular_verb = infinitive => {
-  const stem = infinitive.slice(0, infinitive.length - 2);
   switch (infinitive.slice(-2)) {
     case "ar":
-      return regular_verb_ar(stem);
+      return regular_verb_ar(infinitive);
     case "er":
-      return regular_verb_er(stem);
+      return regular_verb_er(infinitive);
     case "ir":
-      return regular_verb_ir(stem);
+      return regular_verb_ir(infinitive);
     default:
       throw new Error("invalid verb ending!");
   }
@@ -301,6 +310,13 @@ const verbs = [
   regular_verb("ocurrir"),
   regular_verb("permitir"),
   regular_verb("recibir"),
+  regular_verb("tocar"),
+  regular_verb("gozar"),
+  regular_verb("averiguar"),
+  regular_verb("delinquir"),
+  regular_verb("vencer"),
+  regular_verb("proteger"),
+  regular_verb("distinguir"),
   haber
 ];
 
