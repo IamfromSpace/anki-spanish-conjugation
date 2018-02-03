@@ -143,13 +143,12 @@ const verb = (
 
 const get_stem = infinitive => infinitive.slice(0, infinitive.length - 2);
 
-regular_verb_ar = infinitive => {
-  const stem = get_stem(infinitive);
-  return verb(
+regular_verb_ar = infinitive =>
+  verb(
     infinitive,
-    stem + "ando",
-    stem + "ado",
-    stem + "a",
+    ortho_correct(infinitive)("ando"),
+    ortho_correct(infinitive)("ado"),
+    ortho_correct(infinitive)("a"),
     regular_present_ar(infinitive),
     regular_imperfect_ar(infinitive),
     regular_preterite_ar(infinitive),
@@ -158,15 +157,13 @@ regular_verb_ar = infinitive => {
     regular_present_subjunctive_ar(infinitive),
     regular_imperfect_subjunctive_ar(infinitive)
   );
-};
 
-regular_verb_er = infinitive => {
-  const stem = get_stem(infinitive);
-  return verb(
+regular_verb_er = infinitive =>
+  verb(
     infinitive,
-    stem + "iendo",
-    stem + "ido",
-    stem + "e",
+    ortho_correct(infinitive)("iendo"),
+    ortho_correct(infinitive)("ido"),
+    ortho_correct(infinitive)("e"),
     regular_present_er(infinitive),
     regular_imperfect_er(infinitive),
     regular_preterite_er(infinitive),
@@ -175,15 +172,13 @@ regular_verb_er = infinitive => {
     regular_present_subjunctive_er(infinitive),
     regular_imperfect_subjunctive_er(infinitive)
   );
-};
 
-regular_verb_ir = infinitive => {
-  const stem = get_stem(infinitive);
-  return verb(
-    stem + "ir",
-    stem + "iendo",
-    stem + "ido",
-    stem + "e",
+regular_verb_ir = infinitive =>
+  verb(
+    infinitive,
+    ortho_correct(infinitive)("iendo"),
+    ortho_correct(infinitive)("ido"),
+    ortho_correct(infinitive)("e"),
     regular_present_ir(infinitive),
     regular_imperfect_ir(infinitive),
     regular_preterite_ir(infinitive),
@@ -192,7 +187,6 @@ regular_verb_ir = infinitive => {
     regular_present_subjunctive_ir(infinitive),
     regular_imperfect_subjunctive_ir(infinitive)
   );
-};
 
 const haber = verb(
   "haber",

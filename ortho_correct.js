@@ -49,15 +49,15 @@ const get_syllables = word =>
 
 const ending_correct = stem => ending => {
   const ending_syllables = get_syllables(ending);
-  if (
-    /^i[^aáeéoó]/.test(ending) && // must begin with an i and not be a dipthong
+  const is_stressed_i =
     !/[íéáóú]/.test(stem + ending) && // must not have different stress
-    /[eéaáoó]$/.test(stem) && // stem must end with an a/e/o
+    /^i[^aáeéoó]/.test(ending) && // must begin with an i and not be a dipthong
     // in practice, most of these rules never apply here, but are present for if this
     // gets extracted out into a "stress finder" function.
     ((/[^nsaeiou]/.test(ending) && ending_syllables.length === 2) ||
-      ending_syllables.length === 1) // stress must fall on the i
-  ) {
+      ending_syllables.length === 1); // stress must fall on the i
+
+  if (/[eéaáoó]$/.test(stem) && is_stressed_i) {
     return "í" + ending.slice(1, ending.length);
   }
 
@@ -69,6 +69,19 @@ const ending_correct = stem => ending => {
   if (is_monosyllabic) {
     return ending_no_accents;
   }
+
+  if (
+    !is_stressed_i &&
+    /[aáeéiíoóuú]$/.test(stem) &&
+    /^i[aáeéiíoóuú]/.test(ending)
+  ) {
+    return "y" + ending.slice(1, ending.length);
+  }
+
+  if (!is_stressed_i && /(ll|ñ)$/.test(stem) && /^i[aáeéiíoóuú]/.test(ending)) {
+    return ending.slice(1, ending.length);
+  }
+
   return ending;
 };
 

@@ -47,6 +47,7 @@ describe("ortho_correct", () => {
   describe("ending change", () => {
     it("should accent the i when stressed", () => {
       expect(ortho_correct("caer")("imos")).to.equal("caímos");
+      expect(ortho_correct("caer")("iste")).to.equal("caíste");
       expect(ortho_correct("leer")("imos")).to.equal("leímos");
       expect(ortho_correct("oír")("imos")).to.equal("oímos");
     });
@@ -56,6 +57,16 @@ describe("ortho_correct", () => {
       expect(ortho_correct("liar")("ó")).to.equal("lio");
       expect(ortho_correct("ver")("í")).to.equal("vi");
       expect(ortho_correct("ver")("ío")).to.equal("vio");
+    });
+
+    it("should replace an i between vowels with a y", () => {
+      expect(ortho_correct("caer")("ió")).to.equal("cayó");
+      expect(ortho_correct("caer")("ieron")).to.equal("cayeron");
+    });
+
+    it("should drop an i between ll or ñ and a vowel", () => {
+      expect(ortho_correct("bullir")("ió")).to.equal("bulló");
+      expect(ortho_correct("tañer")("ió")).to.equal("tañó");
     });
   });
 });
