@@ -43,4 +43,12 @@ describe("ortho_correct", () => {
       expect(ortho_correct("vencer")("á")).to.equal("venzá");
     });
   });
+
+  describe("ending change", () => {
+    it("should accent the i when stressed", () => {
+      expect(ortho_correct("caer")("imos")).to.equal("caímos");
+      expect(ortho_correct("leer")("imos")).to.equal("leímos");
+      expect(ortho_correct("oír")("imos")).to.equal("oímos");
+    });
+  });
 });

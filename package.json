@@ -9,7 +9,8 @@
   "author": "Nathan Fairhurst <nathan.p3pictures@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "anki-apkg-export": "^4.0.2"
+    "anki-apkg-export": "^4.0.2",
+    "lorca-nlp": "https://github.com/IamfromSpace/lorca.git#dc8ec98616a588abae055acbbb900a9d69269543"
   },
   "devDependencies": {
     "chai": "^4.1.2",
