@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { ortho_correct } = require("./ortho_correct");
+const { dipthongize } = require("./stem_vowel_change");
 
 describe("ortho_correct", () => {
   describe("stem change", () => {
@@ -67,6 +68,25 @@ describe("ortho_correct", () => {
     it("should drop an i between ll or ñ and a vowel", () => {
       expect(ortho_correct("bullir")("ió")).to.equal("bulló");
       expect(ortho_correct("tañer")("ió")).to.equal("tañó");
+    });
+  });
+
+  describe("dipthongize", () => {
+    it("should...", () => {
+      expect(dipthongize("pens")("o")).to.equal("piens");
+      expect(dipthongize("cont")("o")).to.equal("cuent");
+      expect(dipthongize("ol")("o")).to.equal("huel");
+      expect(dipthongize("err")("o")).to.equal("yerr");
+
+      expect(dipthongize("jug")("o")).to.equal("jueg");
+      expect(dipthongize("aduquir")("o")).to.equal("aduquier");
+
+      expect(dipthongize("pens")("amos")).to.equal("pens");
+      expect(dipthongize("cont")("amos")).to.equal("cont");
+      expect(dipthongize("ol")("emos")).to.equal("ol");
+      expect(dipthongize("err")("amos")).to.equal("err");
+
+      expect(dipthongize("avergonz")("o")).to.equal("avergüenz");
     });
   });
 });

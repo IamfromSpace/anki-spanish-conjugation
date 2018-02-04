@@ -1,4 +1,5 @@
-const lorca = require("lorca-nlp");
+const { get_syllables } = require("./nlp_helpers");
+const { dipthongize } = require("./stem_vowel_change");
 
 const stem_correct = infinitive => ending => {
   const stem = infinitive.slice(0, infinitive.length - 2);
@@ -42,11 +43,6 @@ const unaccent = word =>
     .replace(/ó/g, "o")
     .replace(/ú/g, "u");
 
-const get_syllables = word =>
-  lorca(word)
-    .syllables()
-    .get();
-
 const ending_correct = stem => ending => {
   const ending_syllables = get_syllables(ending);
   const is_stressed_i =
@@ -54,7 +50,7 @@ const ending_correct = stem => ending => {
     /^i[^aáeéoó]/.test(ending) && // must begin with an i and not be a dipthong
     // in practice, most of these rules never apply here, but are present for if this
     // gets extracted out into a "stress finder" function.
-    ((/[^nsaeiou]/.test(ending) && ending_syllables.length === 2) ||
+    ((/[nsaeiou]$/.test(ending) && ending_syllables.length === 2) ||
       ending_syllables.length === 1); // stress must fall on the i
 
   if (/[eéaáoó]$/.test(stem) && is_stressed_i) {
@@ -90,4 +86,11 @@ const ortho_correct = infinitive => ending => {
   return stem + ending_correct(stem)(ending);
 };
 
-module.exports = { ortho_correct };
+const ortho_correct_dipthongizing = infinitive => ending => {
+  const init_stem = infinitive.slice(0, infinitive.length - 2);
+  const pre_stem = dipthongize(init_stem)(ending);
+  const final_stem = stem_correct(pre_stem + infinitive.slice(-2))(ending);
+  return final_stem + ending_correct(final_stem)(ending);
+};
+
+module.exports = { ortho_correct, ortho_correct_dipthongizing };

@@ -1,9 +1,15 @@
 // Hack to get more memory out of underlying sql.js module
 // https://github.com/kripken/sql.js/issues/113#issuecomment-317877596
-Module = { TOTAL_MEMORY: Math.pow(2, 25) - 1 };
+Module = { TOTAL_MEMORY: Math.pow(2, 26) - 1 };
 const fs = require("fs");
 const AnkiExport = require("anki-apkg-export").default;
-const { ortho_correct } = require("./ortho_correct");
+const {
+  ortho_correct,
+  ortho_correct_dipthongizing
+} = require("./ortho_correct");
+
+// just because I always need these...
+// á, é, í, ó, ú, ñ, ü
 
 const tense_desc = {
   present: "cada día",
@@ -40,78 +46,59 @@ const tense_map = fn => t => ({
 const tense_append = tense => infinitive =>
   tense_map(ending => ortho_correct(infinitive)(ending))(tense);
 
+const tense_append_dipthongizing = tense => infinitive =>
+  tense_map(ending => ortho_correct_dipthongizing(infinitive)(ending))(tense);
+
 // -ar
-const regular_present_ar = tense_append(tense("o", "as", "a", "amos", "an"));
+const present_ar = tense("o", "as", "a", "amos", "an");
 
-const regular_imperfect_ar = tense_append(
-  tense("aba", "abas", "aba", "ábamos", "aban")
-);
+const imperfect_ar = tense("aba", "abas", "aba", "ábamos", "aban");
 
-const regular_preterite_ar = tense_append(
-  tense("é", "aste", "ó", "amos", "aron")
-);
+const preterite_ar = tense("é", "aste", "ó", "amos", "aron");
 
-const regular_future_ar = tense_append(
-  tense("aré", "arás", "ará", "aremos", "arán")
-);
+const future_ar = tense("aré", "arás", "ará", "aremos", "arán");
 
-const regular_conditional_ar = tense_append(
-  tense("aría", "arías", "aría", "aríamos", "arían")
-);
+const conditional_ar = tense("aría", "arías", "aría", "aríamos", "arían");
 
-const regular_present_subjunctive_ar = tense_append(
-  tense("e", "es", "e", "emos", "en")
-);
+const present_subjunctive_ar = tense("e", "es", "e", "emos", "en");
 
-const regular_imperfect_subjunctive_ar = tense_append(
-  tense("ara", "aras", "ara", "áramos", "aran")
-);
+const imperfect_subjunctive_ar = tense("ara", "aras", "ara", "áramos", "aran");
 
 // -er
-const regular_present_er = tense_append(tense("o", "es", "e", "emos", "en"));
+const present_er = tense("o", "es", "e", "emos", "en");
 
-const regular_imperfect_er = tense_append(
-  tense("ía", "ías", "ía", "íamos", "ían")
-);
+const imperfect_er = tense("ía", "ías", "ía", "íamos", "ían");
 
-const regular_preterite_er = tense_append(
-  tense("í", "iste", "ió", "imos", "ieron")
-);
+const preterite_er = tense("í", "iste", "ió", "imos", "ieron");
 
-const regular_future_er = tense_append(
-  tense("eré", "erás", "erá", "eremos", "erán")
-);
+const future_er = tense("eré", "erás", "erá", "eremos", "erán");
 
-const regular_conditional_er = tense_append(
-  tense("ería", "erías", "ería", "eríamos", "erían")
-);
+const conditional_er = tense("ería", "erías", "ería", "eríamos", "erían");
 
-const regular_present_subjunctive_er = tense_append(
-  tense("a", "as", "a", "amos", "an")
-);
+const present_subjunctive_er = tense("a", "as", "a", "amos", "an");
 
-const regular_imperfect_subjunctive_er = tense_append(
-  tense("iera", "ieras", "iera", "iéramos", "ieran")
+const imperfect_subjunctive_er = tense(
+  "iera",
+  "ieras",
+  "iera",
+  "iéramos",
+  "ieran"
 );
 
 // -ir
-const regular_present_ir = tense_append(tense("o", "es", "e", "imos", "en"));
+const present_ir = tense("o", "es", "e", "imos", "en");
 
-const regular_imperfect_ir = regular_imperfect_er;
+const imperfect_ir = imperfect_er;
 
-const regular_preterite_ir = regular_preterite_er;
+const preterite_ir = preterite_er;
 
-const regular_future_ir = tense_append(
-  tense("iré", "irás", "irá", "iremos", "irán")
-);
+const future_ir = tense("iré", "irás", "irá", "iremos", "irán");
 
-const regular_conditional_ir = tense_append(
-  tense("iría", "irías", "iría", "iríamos", "irían")
-);
+const conditional_ir = tense("iría", "irías", "iría", "iríamos", "irían");
 
-const regular_present_subjunctive_ir = regular_present_subjunctive_er;
+const present_subjunctive_ir = present_subjunctive_er;
 
-const regular_imperfect_subjunctive_ir = regular_imperfect_subjunctive_er;
+const imperfect_subjunctive_ir = imperfect_subjunctive_er;
 
 const verb = (
   infinitive,
@@ -149,13 +136,13 @@ regular_verb_ar = infinitive =>
     ortho_correct(infinitive)("ando"),
     ortho_correct(infinitive)("ado"),
     ortho_correct(infinitive)("a"),
-    regular_present_ar(infinitive),
-    regular_imperfect_ar(infinitive),
-    regular_preterite_ar(infinitive),
-    regular_future_ar(infinitive),
-    regular_conditional_ar(infinitive),
-    regular_present_subjunctive_ar(infinitive),
-    regular_imperfect_subjunctive_ar(infinitive)
+    tense_append(present_ar)(infinitive),
+    tense_append(imperfect_ar)(infinitive),
+    tense_append(preterite_ar)(infinitive),
+    tense_append(future_ar)(infinitive),
+    tense_append(conditional_ar)(infinitive),
+    tense_append(present_subjunctive_ar)(infinitive),
+    tense_append(imperfect_subjunctive_ar)(infinitive)
   );
 
 regular_verb_er = infinitive =>
@@ -164,13 +151,13 @@ regular_verb_er = infinitive =>
     ortho_correct(infinitive)("iendo"),
     ortho_correct(infinitive)("ido"),
     ortho_correct(infinitive)("e"),
-    regular_present_er(infinitive),
-    regular_imperfect_er(infinitive),
-    regular_preterite_er(infinitive),
-    regular_future_er(infinitive),
-    regular_conditional_er(infinitive),
-    regular_present_subjunctive_er(infinitive),
-    regular_imperfect_subjunctive_er(infinitive)
+    tense_append(present_er)(infinitive),
+    tense_append(imperfect_er)(infinitive),
+    tense_append(preterite_er)(infinitive),
+    tense_append(future_er)(infinitive),
+    tense_append(conditional_er)(infinitive),
+    tense_append(present_subjunctive_er)(infinitive),
+    tense_append(imperfect_subjunctive_er)(infinitive)
   );
 
 regular_verb_ir = infinitive =>
@@ -179,13 +166,58 @@ regular_verb_ir = infinitive =>
     ortho_correct(infinitive)("iendo"),
     ortho_correct(infinitive)("ido"),
     ortho_correct(infinitive)("e"),
-    regular_present_ir(infinitive),
-    regular_imperfect_ir(infinitive),
-    regular_preterite_ir(infinitive),
-    regular_future_ir(infinitive),
-    regular_conditional_ir(infinitive),
-    regular_present_subjunctive_ir(infinitive),
-    regular_imperfect_subjunctive_ir(infinitive)
+    tense_append(present_ir)(infinitive),
+    tense_append(imperfect_ir)(infinitive),
+    tense_append(preterite_ir)(infinitive),
+    tense_append(future_ir)(infinitive),
+    tense_append(conditional_ir)(infinitive),
+    tense_append(present_subjunctive_ir)(infinitive),
+    tense_append(imperfect_subjunctive_ir)(infinitive)
+  );
+
+dipthongizing_verb_ar = infinitive =>
+  verb(
+    infinitive,
+    ortho_correct_dipthongizing(infinitive)("ando"),
+    ortho_correct_dipthongizing(infinitive)("ado"),
+    ortho_correct_dipthongizing(infinitive)("a"),
+    tense_append_dipthongizing(present_ar)(infinitive),
+    tense_append_dipthongizing(imperfect_ar)(infinitive),
+    tense_append_dipthongizing(preterite_ar)(infinitive),
+    tense_append_dipthongizing(future_ar)(infinitive),
+    tense_append_dipthongizing(conditional_ar)(infinitive),
+    tense_append_dipthongizing(present_subjunctive_ar)(infinitive),
+    tense_append_dipthongizing(imperfect_subjunctive_ar)(infinitive)
+  );
+
+dipthongizing_verb_er = infinitive =>
+  verb(
+    infinitive,
+    ortho_correct_dipthongizing(infinitive)("ando"),
+    ortho_correct_dipthongizing(infinitive)("ado"),
+    ortho_correct_dipthongizing(infinitive)("a"),
+    tense_append_dipthongizing(present_er)(infinitive),
+    tense_append_dipthongizing(imperfect_er)(infinitive),
+    tense_append_dipthongizing(preterite_er)(infinitive),
+    tense_append_dipthongizing(future_er)(infinitive),
+    tense_append_dipthongizing(conditional_er)(infinitive),
+    tense_append_dipthongizing(present_subjunctive_er)(infinitive),
+    tense_append_dipthongizing(imperfect_subjunctive_er)(infinitive)
+  );
+
+dipthongizing_verb_ir = infinitive =>
+  verb(
+    infinitive,
+    ortho_correct_dipthongizing(infinitive)("ando"),
+    ortho_correct_dipthongizing(infinitive)("ado"),
+    ortho_correct_dipthongizing(infinitive)("a"),
+    tense_append_dipthongizing(present_ir)(infinitive),
+    tense_append_dipthongizing(imperfect_ir)(infinitive),
+    tense_append_dipthongizing(preterite_ir)(infinitive),
+    tense_append_dipthongizing(future_ir)(infinitive),
+    tense_append_dipthongizing(conditional_ir)(infinitive),
+    tense_append_dipthongizing(present_subjunctive_ir)(infinitive),
+    tense_append_dipthongizing(imperfect_subjunctive_ir)(infinitive)
   );
 
 const haber = verb(
@@ -210,6 +242,19 @@ regular_verb = infinitive => {
       return regular_verb_er(infinitive);
     case "ir":
       return regular_verb_ir(infinitive);
+    default:
+      throw new Error("invalid verb ending!");
+  }
+};
+
+const dipthongizing_verb = infinitive => {
+  switch (infinitive.slice(-2)) {
+    case "ar":
+      return dipthongizing_verb_ar(infinitive);
+    case "er":
+      return dipthongizing_verb_er(infinitive);
+    case "ir":
+      return dipthongizing_verb_ir(infinitive);
     default:
       throw new Error("invalid verb ending!");
   }
@@ -311,6 +356,12 @@ const verbs = [
   regular_verb("vencer"),
   regular_verb("proteger"),
   regular_verb("distinguir"),
+  regular_verb("leer"),
+  dipthongizing_verb("pensar"),
+  dipthongizing_verb("oler"),
+  dipthongizing_verb("errar"),
+  dipthongizing_verb("contar"),
+  dipthongizing_verb("jugar"),
   haber
 ];
 
