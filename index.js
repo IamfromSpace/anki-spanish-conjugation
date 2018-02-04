@@ -193,9 +193,9 @@ dipthongizing_verb_ar = infinitive =>
 dipthongizing_verb_er = infinitive =>
   verb(
     infinitive,
-    ortho_correct_dipthongizing(infinitive)("ando"),
-    ortho_correct_dipthongizing(infinitive)("ado"),
-    ortho_correct_dipthongizing(infinitive)("a"),
+    ortho_correct_dipthongizing(infinitive)("iendo"),
+    ortho_correct_dipthongizing(infinitive)("ido"),
+    ortho_correct_dipthongizing(infinitive)("e"),
     tense_append_dipthongizing(present_er)(infinitive),
     tense_append_dipthongizing(imperfect_er)(infinitive),
     tense_append_dipthongizing(preterite_er)(infinitive),
@@ -208,9 +208,9 @@ dipthongizing_verb_er = infinitive =>
 dipthongizing_verb_ir = infinitive =>
   verb(
     infinitive,
-    ortho_correct_dipthongizing(infinitive)("ando"),
-    ortho_correct_dipthongizing(infinitive)("ado"),
-    ortho_correct_dipthongizing(infinitive)("a"),
+    ortho_correct_dipthongizing(infinitive)("iendo"),
+    ortho_correct_dipthongizing(infinitive)("ido"),
+    ortho_correct_dipthongizing(infinitive)("e"),
     tense_append_dipthongizing(present_ir)(infinitive),
     tense_append_dipthongizing(imperfect_ir)(infinitive),
     tense_append_dipthongizing(preterite_ir)(infinitive),
