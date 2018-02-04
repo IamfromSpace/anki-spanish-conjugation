@@ -3,10 +3,7 @@
 Module = { TOTAL_MEMORY: Math.pow(2, 26) - 1 };
 const fs = require("fs");
 const AnkiExport = require("anki-apkg-export").default;
-const {
-  ortho_correct,
-  ortho_correct_dipthongizing
-} = require("./ortho_correct");
+const { ortho_correct } = require("./ortho_correct");
 
 // just because I always need these...
 // á, é, í, ó, ú, ñ, ü
@@ -43,11 +40,10 @@ const tense_map = fn => t => ({
   ustedes: fn(t.ustedes)
 });
 
-const tense_append = tense => infinitive =>
-  tense_map(ending => ortho_correct(infinitive)(ending))(tense);
-
-const tense_append_dipthongizing = tense => infinitive =>
-  tense_map(ending => ortho_correct_dipthongizing(infinitive)(ending))(tense);
+const tense_append = vowel_rasing => dipthongizing => infinitive =>
+  tense_map(ending =>
+    ortho_correct(vowel_rasing)(dipthongizing)(infinitive)(ending)
+  );
 
 // -ar
 const present_ar = tense("o", "as", "a", "amos", "an");
@@ -130,95 +126,59 @@ const verb = (
 
 const get_stem = infinitive => infinitive.slice(0, infinitive.length - 2);
 
-regular_verb_ar = infinitive =>
-  verb(
+const verb_ar = vowel_rasing => dipthongizing => infinitive => {
+  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+  return verb(
     infinitive,
-    ortho_correct(infinitive)("ando"),
-    ortho_correct(infinitive)("ado"),
-    ortho_correct(infinitive)("a"),
-    tense_append(present_ar)(infinitive),
-    tense_append(imperfect_ar)(infinitive),
-    tense_append(preterite_ar)(infinitive),
-    tense_append(future_ar)(infinitive),
-    tense_append(conditional_ar)(infinitive),
-    tense_append(present_subjunctive_ar)(infinitive),
-    tense_append(imperfect_subjunctive_ar)(infinitive)
+    correct("ando"),
+    correct("ado"),
+    correct("a"),
+    append(present_ar),
+    append(imperfect_ar),
+    append(preterite_ar),
+    append(future_ar),
+    append(conditional_ar),
+    append(present_subjunctive_ar),
+    append(imperfect_subjunctive_ar)
   );
+};
 
-regular_verb_er = infinitive =>
-  verb(
+const verb_er = vowel_rasing => dipthongizing => infinitive => {
+  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+  return verb(
     infinitive,
-    ortho_correct(infinitive)("iendo"),
-    ortho_correct(infinitive)("ido"),
-    ortho_correct(infinitive)("e"),
-    tense_append(present_er)(infinitive),
-    tense_append(imperfect_er)(infinitive),
-    tense_append(preterite_er)(infinitive),
-    tense_append(future_er)(infinitive),
-    tense_append(conditional_er)(infinitive),
-    tense_append(present_subjunctive_er)(infinitive),
-    tense_append(imperfect_subjunctive_er)(infinitive)
+    correct("iendo"),
+    correct("ido"),
+    correct("e"),
+    append(present_er),
+    append(imperfect_er),
+    append(preterite_er),
+    append(future_er),
+    append(conditional_er),
+    append(present_subjunctive_er),
+    append(imperfect_subjunctive_er)
   );
+};
 
-regular_verb_ir = infinitive =>
-  verb(
+const verb_ir = vowel_rasing => dipthongizing => infinitive => {
+  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+  return verb(
     infinitive,
-    ortho_correct(infinitive)("iendo"),
-    ortho_correct(infinitive)("ido"),
-    ortho_correct(infinitive)("e"),
-    tense_append(present_ir)(infinitive),
-    tense_append(imperfect_ir)(infinitive),
-    tense_append(preterite_ir)(infinitive),
-    tense_append(future_ir)(infinitive),
-    tense_append(conditional_ir)(infinitive),
-    tense_append(present_subjunctive_ir)(infinitive),
-    tense_append(imperfect_subjunctive_ir)(infinitive)
+    correct("iendo"),
+    correct("ido"),
+    correct("e"),
+    append(present_ir),
+    append(imperfect_ir),
+    append(preterite_ir),
+    append(future_ir),
+    append(conditional_ir),
+    append(present_subjunctive_ir),
+    append(imperfect_subjunctive_ir)
   );
-
-dipthongizing_verb_ar = infinitive =>
-  verb(
-    infinitive,
-    ortho_correct_dipthongizing(infinitive)("ando"),
-    ortho_correct_dipthongizing(infinitive)("ado"),
-    ortho_correct_dipthongizing(infinitive)("a"),
-    tense_append_dipthongizing(present_ar)(infinitive),
-    tense_append_dipthongizing(imperfect_ar)(infinitive),
-    tense_append_dipthongizing(preterite_ar)(infinitive),
-    tense_append_dipthongizing(future_ar)(infinitive),
-    tense_append_dipthongizing(conditional_ar)(infinitive),
-    tense_append_dipthongizing(present_subjunctive_ar)(infinitive),
-    tense_append_dipthongizing(imperfect_subjunctive_ar)(infinitive)
-  );
-
-dipthongizing_verb_er = infinitive =>
-  verb(
-    infinitive,
-    ortho_correct_dipthongizing(infinitive)("iendo"),
-    ortho_correct_dipthongizing(infinitive)("ido"),
-    ortho_correct_dipthongizing(infinitive)("e"),
-    tense_append_dipthongizing(present_er)(infinitive),
-    tense_append_dipthongizing(imperfect_er)(infinitive),
-    tense_append_dipthongizing(preterite_er)(infinitive),
-    tense_append_dipthongizing(future_er)(infinitive),
-    tense_append_dipthongizing(conditional_er)(infinitive),
-    tense_append_dipthongizing(present_subjunctive_er)(infinitive),
-    tense_append_dipthongizing(imperfect_subjunctive_er)(infinitive)
-  );
-
-dipthongizing_verb_ir = infinitive =>
-  verb(
-    infinitive,
-    ortho_correct_dipthongizing(infinitive)("iendo"),
-    ortho_correct_dipthongizing(infinitive)("ido"),
-    ortho_correct_dipthongizing(infinitive)("e"),
-    tense_append_dipthongizing(present_ir)(infinitive),
-    tense_append_dipthongizing(imperfect_ir)(infinitive),
-    tense_append_dipthongizing(preterite_ir)(infinitive),
-    tense_append_dipthongizing(future_ir)(infinitive),
-    tense_append_dipthongizing(conditional_ir)(infinitive),
-    tense_append_dipthongizing(present_subjunctive_ir)(infinitive),
-    tense_append_dipthongizing(imperfect_subjunctive_ir)(infinitive)
-  );
+};
 
 const haber = verb(
   "haber",
@@ -234,31 +194,28 @@ const haber = verb(
   tense("hubiera", "hubieras", "hubiera", "hubiéramos", "hubieran")
 );
 
-regular_verb = infinitive => {
+const make_verb = vowel_rasing => dipthongizing => infinitive => {
+  let selected;
   switch (infinitive.slice(-2)) {
     case "ar":
-      return regular_verb_ar(infinitive);
+      selected = verb_ar;
+      break;
     case "er":
-      return regular_verb_er(infinitive);
+      selected = verb_er;
+      break;
     case "ir":
-      return regular_verb_ir(infinitive);
+      selected = verb_ir;
+      break;
     default:
       throw new Error("invalid verb ending!");
   }
+  return selected(vowel_rasing)(dipthongizing)(infinitive);
 };
 
-const dipthongizing_verb = infinitive => {
-  switch (infinitive.slice(-2)) {
-    case "ar":
-      return dipthongizing_verb_ar(infinitive);
-    case "er":
-      return dipthongizing_verb_er(infinitive);
-    case "ir":
-      return dipthongizing_verb_ir(infinitive);
-    default:
-      throw new Error("invalid verb ending!");
-  }
-};
+const regular_verb = make_verb(false)(false);
+const dipthongizing_verb = make_verb(false)(true);
+const vowel_raising_verb = make_verb(true)(false);
+const vowel_raising_and_dipthongizing_verb = make_verb(true)(true);
 
 const card = (front, back, tags) => ({
   front,
@@ -362,6 +319,11 @@ const verbs = [
   dipthongizing_verb("errar"),
   dipthongizing_verb("contar"),
   dipthongizing_verb("jugar"),
+  vowel_raising_verb("pedir"),
+  vowel_raising_verb("teñir"),
+  vowel_raising_verb("elegir"),
+  vowel_raising_and_dipthongizing_verb("dormir"),
+  vowel_raising_and_dipthongizing_verb("sentir"),
   haber
 ];
 

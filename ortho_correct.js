@@ -1,5 +1,5 @@
 const { get_syllables } = require("./nlp_helpers");
-const { dipthongize } = require("./stem_vowel_change");
+const { dipthongize, vowel_raise } = require("./stem_vowel_change");
 const { starts_with_stressed_i } = require("./stress");
 
 const stem_correct = infinitive => ending => {
@@ -75,16 +75,14 @@ const ending_correct = stem => ending => {
   return ending;
 };
 
-const ortho_correct = infinitive => ending => {
-  const stem = stem_correct(infinitive)(ending);
-  return stem + ending_correct(stem)(ending);
+const ortho_correct = vowel_rasing => dipthongizing => infinitive => ending => {
+  const stem_1 = infinitive.slice(0, infinitive.length - 2);
+  const stem_2 = dipthongizing ? dipthongize(stem_1)(ending) : stem_1;
+  const stem_3 = vowel_rasing
+    ? vowel_raise(dipthongizing)(stem_2)(ending)
+    : stem_2;
+  const stem_4 = stem_correct(stem_3 + infinitive.slice(-2))(ending);
+  return stem_4 + ending_correct(stem_4)(ending);
 };
 
-const ortho_correct_dipthongizing = infinitive => ending => {
-  const init_stem = infinitive.slice(0, infinitive.length - 2);
-  const pre_stem = dipthongize(init_stem)(ending);
-  const final_stem = stem_correct(pre_stem + infinitive.slice(-2))(ending);
-  return final_stem + ending_correct(final_stem)(ending);
-};
-
-module.exports = { ortho_correct, ortho_correct_dipthongizing };
+module.exports = { ortho_correct };
