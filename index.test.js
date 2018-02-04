@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { ortho_correct } = require("./ortho_correct");
-const { dipthongize } = require("./stem_vowel_change");
+const { dipthongize, vowel_raise } = require("./stem_vowel_change");
 
 describe("ortho_correct", () => {
   describe("stem change", () => {
@@ -87,6 +87,37 @@ describe("ortho_correct", () => {
       expect(dipthongize("err")("amos")).to.equal("err");
 
       expect(dipthongize("avergonz")("o")).to.equal("avergüenz");
+    });
+  });
+
+  describe("vowel_raising", () => {
+    it("not raise for non-dipthongizers when the ending does not included ir or í", () => {
+      expect(vowel_raise(false)("ped")("o")).to.equal("pid");
+      expect(vowel_raise(false)("ped")("a")).to.equal("pid");
+      expect(vowel_raise(false)("ped")("e")).to.equal("pid");
+    });
+
+    it("raise for dipthongizers when no dipthong is created and ending does not included ir or í", () => {
+      expect(vowel_raise(true)("dorm")("amos")).to.equal("durm");
+      expect(vowel_raise(true)("dorm")("iendo")).to.equal("durm");
+      expect(vowel_raise(true)("dorm")("ieron")).to.equal("durm");
+      expect(vowel_raise(true)("sent")("amos")).to.equal("sint");
+      expect(vowel_raise(true)("sent")("iendo")).to.equal("sint");
+      expect(vowel_raise(true)("sent")("ieron")).to.equal("sint");
+    });
+
+    it("not raise for dipthongizers when a dipthong is created when it otherwise would", () => {
+      expect(vowel_raise(true)("dorm")("o")).to.equal("dorm");
+      expect(vowel_raise(true)("dorm")("a")).to.equal("dorm");
+      expect(vowel_raise(true)("dorm")("e")).to.equal("dorm");
+      expect(vowel_raise(true)("sent")("o")).to.equal("sent");
+      expect(vowel_raise(true)("sent")("a")).to.equal("sent");
+      expect(vowel_raise(true)("sent")("e")).to.equal("sent");
+    });
+
+    it("not raise when the ending does not included ir or í (dipthong or not)", () => {
+      expect(vowel_raise(true)("sent")("ido")).to.equal("sent");
+      expect(vowel_raise(false)("sent")("ido")).to.equal("sent");
     });
   });
 });

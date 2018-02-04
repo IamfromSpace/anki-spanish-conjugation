@@ -1,11 +1,13 @@
 const { get_syllables } = require("./nlp_helpers");
+const { starts_with_stressed_i } = require("./stress");
+
+const creates_dipthong = ending =>
+  /[nsaeiou]$/.test(ending) &&
+  !/[áéíóú]/.test(ending) &&
+  get_syllables(ending).length == 1;
 
 const dipthongize = stem => ending => {
-  if (
-    /[nsaeiou]$/.test(ending) &&
-    !/[áéíóú]/.test(ending) &&
-    get_syllables(ending).length == 1
-  ) {
+  if (creates_dipthong(ending)) {
     const syllables = get_syllables(stem);
     const first_syllables = syllables.slice(0, syllables.length - 1).join("");
     const final_syllable = syllables[syllables.length - 1].replace(".", "");
@@ -26,4 +28,22 @@ const dipthongize = stem => ending => {
   return stem;
 };
 
-module.exports = { dipthongize };
+const vowel_raise = dipthongizes => stem => ending => {
+  if (
+    !(/ir/.test(ending) || starts_with_stressed_i(ending)) &&
+    (!dipthongizes || !creates_dipthong(ending))
+  ) {
+    const syllables = get_syllables(stem);
+    const first_syllables = syllables.slice(0, syllables.length - 1).join("");
+    const final_syllable = syllables[syllables.length - 1].replace(".", "");
+
+    if (/e/.test(final_syllable)) {
+      return first_syllables + final_syllable.replace("e", "i");
+    } else if (/o/.test(final_syllable)) {
+      return first_syllables + final_syllable.replace("o", "u");
+    }
+  }
+  return stem;
+};
+
+module.exports = { dipthongize, vowel_raise };

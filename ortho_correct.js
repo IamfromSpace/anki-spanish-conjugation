@@ -1,5 +1,6 @@
 const { get_syllables } = require("./nlp_helpers");
 const { dipthongize } = require("./stem_vowel_change");
+const { starts_with_stressed_i } = require("./stress");
 
 const stem_correct = infinitive => ending => {
   const stem = infinitive.slice(0, infinitive.length - 2);
@@ -44,14 +45,7 @@ const unaccent = word =>
     .replace(/ú/g, "u");
 
 const ending_correct = stem => ending => {
-  const ending_syllables = get_syllables(ending);
-  const is_stressed_i =
-    !/[íéáóú]/.test(stem + ending) && // must not have different stress
-    /^i[^aáeéoó]/.test(ending) && // must begin with an i and not be a dipthong
-    // in practice, most of these rules never apply here, but are present for if this
-    // gets extracted out into a "stress finder" function.
-    ((/[nsaeiou]$/.test(ending) && ending_syllables.length === 2) ||
-      ending_syllables.length === 1); // stress must fall on the i
+  const is_stressed_i = starts_with_stressed_i(ending);
 
   if (/[eéaáoó]$/.test(stem) && is_stressed_i) {
     return "í" + ending.slice(1, ending.length);
