@@ -40,9 +40,9 @@ const tense_map = fn => t => ({
   ustedes: fn(t.ustedes)
 });
 
-const tense_append = vowel_rasing => dipthongizing => infinitive =>
+const tense_append = vowel_raising => dipthongizing => infinitive =>
   tense_map(ending =>
-    ortho_correct(vowel_rasing)(dipthongizing)(infinitive)(ending)
+    ortho_correct(vowel_raising)(dipthongizing)(infinitive)(ending)
   );
 
 // -ar
@@ -98,6 +98,8 @@ const imperfect_subjunctive_ir = imperfect_subjunctive_er;
 
 const verb = (
   infinitive,
+  dipthongizing,
+  vowel_raising,
   present_participle,
   past_participle,
   imperative_positive_tú,
@@ -110,6 +112,8 @@ const verb = (
   imperfect_subjunctive
 ) => ({
   infinitive,
+  dipthongizing,
+  vowel_raising,
   present_participle,
   past_participle,
   imperative_positive_tú,
@@ -126,11 +130,13 @@ const verb = (
 
 const get_stem = infinitive => infinitive.slice(0, infinitive.length - 2);
 
-const verb_ar = vowel_rasing => dipthongizing => infinitive => {
-  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
-  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+const verb_ar = vowel_raising => dipthongizing => infinitive => {
+  const append = tense_append(vowel_raising)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_raising)(dipthongizing)(infinitive);
   return verb(
     infinitive,
+    dipthongizing,
+    vowel_raising,
     correct("ando"),
     correct("ado"),
     correct("a"),
@@ -144,11 +150,13 @@ const verb_ar = vowel_rasing => dipthongizing => infinitive => {
   );
 };
 
-const verb_er = vowel_rasing => dipthongizing => infinitive => {
-  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
-  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+const verb_er = vowel_raising => dipthongizing => infinitive => {
+  const append = tense_append(vowel_raising)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_raising)(dipthongizing)(infinitive);
   return verb(
     infinitive,
+    dipthongizing,
+    vowel_raising,
     correct("iendo"),
     correct("ido"),
     correct("e"),
@@ -162,11 +170,13 @@ const verb_er = vowel_rasing => dipthongizing => infinitive => {
   );
 };
 
-const verb_ir = vowel_rasing => dipthongizing => infinitive => {
-  const append = tense_append(vowel_rasing)(dipthongizing)(infinitive);
-  const correct = ortho_correct(vowel_rasing)(dipthongizing)(infinitive);
+const verb_ir = vowel_raising => dipthongizing => infinitive => {
+  const append = tense_append(vowel_raising)(dipthongizing)(infinitive);
+  const correct = ortho_correct(vowel_raising)(dipthongizing)(infinitive);
   return verb(
     infinitive,
+    dipthongizing,
+    vowel_raising,
     correct("iendo"),
     correct("ido"),
     correct("e"),
@@ -182,6 +192,8 @@ const verb_ir = vowel_rasing => dipthongizing => infinitive => {
 
 const haber = verb(
   "haber",
+  true,
+  false,
   "habiendo",
   "habido",
   "hé",
@@ -194,7 +206,7 @@ const haber = verb(
   tense("hubiera", "hubieras", "hubiera", "hubiéramos", "hubieran")
 );
 
-const make_verb = vowel_rasing => dipthongizing => infinitive => {
+const make_verb = vowel_raising => dipthongizing => infinitive => {
   let selected;
   switch (infinitive.slice(-2)) {
     case "ar":
@@ -209,7 +221,7 @@ const make_verb = vowel_rasing => dipthongizing => infinitive => {
     default:
       throw new Error("invalid verb ending!");
   }
-  return selected(vowel_rasing)(dipthongizing)(infinitive);
+  return selected(vowel_raising)(dipthongizing)(infinitive);
 };
 
 const regular_verb = make_verb(false)(false);
@@ -223,16 +235,22 @@ const card = (front, back, tags) => ({
   tags
 });
 
-const simple_tense_to_cards = (infinitive, tense_name, tense) =>
-  Object.keys(tense).map(subject =>
-    card(
+const tense_to_cards = (infinitive, tense_name, tense, tags) =>
+  Object.keys(tense).map(subject => {
+    const base_tags = [
+      subject,
+      tense_name,
+      infinitive,
+      `-${infinitive.slice(-2)}`
+    ];
+    return card(
       `<div style="font-size:36px; font-weight:bold">${infinitive}</div><img src="${tense_name}.png" /><img src="${subject}.png" /><div style="font-size:12px; font-style:italic">(${
         tense_desc[tense_name]
       }, ${subject})</div>`,
       tense[subject],
-      [subject, tense_name, infinitive, `-${infinitive.slice(-2)}`]
-    )
-  );
+      tags ? base_tags.concat(tags) : base_tags
+    );
+  });
 
 const verb_to_compound_tenses = verb => {
   const add_past_particple = tense_map(x => x + " " + verb.past_participle);
@@ -253,19 +271,24 @@ const verb_to_compound_tenses = verb => {
 };
 
 const verb_to_cards = verb => {
+  const verb_tags = [];
+  verb.dipthongizing && verb_tags.push("dipthongizing");
+  verb.vowel_raising && verb_tags.push("vowel_raising");
   const simple_cards = Object.keys(verb.simple_tenses).map(tense_name =>
-    simple_tense_to_cards(
+    tense_to_cards(
       verb.infinitive,
       tense_name,
-      verb.simple_tenses[tense_name]
+      verb.simple_tenses[tense_name],
+      verb_tags.concat(["simple"])
     )
   );
   const compound_tenses = verb_to_compound_tenses(verb);
   const compound_cards = Object.keys(compound_tenses).map(tense_name =>
-    simple_tense_to_cards(
+    tense_to_cards(
       verb.infinitive,
       tense_name,
-      compound_tenses[tense_name]
+      compound_tenses[tense_name],
+      verb_tags.concat(["compound"])
     )
   );
   return simple_cards.concat(compound_cards).reduce((p, n) => p.concat(n), []);
