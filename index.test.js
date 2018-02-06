@@ -13,11 +13,21 @@ describe("regular ortho_correct", () => {
       expect(correct("averiguar")("emos")).to.equal("averigüemos");
     });
 
-    it("-[ei]r verbs", () => {
-      expect(correct("delinquir")("amos")).to.equal("delincamos");
-      expect(correct("vencer")("o")).to.equal("venzo");
-      expect(correct("proteger")("amos")).to.equal("protejamos");
-      expect(correct("distinguir")("amos")).to.equal("distingamos");
+    describe("-[ei]r verbs", () => {
+      it("sound preservation", () => {
+        expect(correct("delinquir")("amos")).to.equal("delincamos");
+        expect(correct("vencer")("o")).to.equal("venzo");
+        expect(correct("proteger")("amos")).to.equal("protejamos");
+        expect(correct("distinguir")("amos")).to.equal("distingamos");
+      });
+
+      it("-uir medial -y-", () => {
+        expect(correct("construir")("o")).to.equal("construyo");
+        expect(correct("construir")("es")).to.equal("construyes");
+        expect(correct("construir")("a")).to.equal("construya");
+        expect(correct("argüir")("o")).to.equal("arguyo");
+        expect(correct("argüir")("ó")).to.equal("arguyó");
+      });
     });
   });
 
@@ -27,11 +37,20 @@ describe("regular ortho_correct", () => {
       expect(correct("hablar")("emos")).to.equal("hablemos");
     });
 
-    it("-[ei]r verbs", () => {
-      expect(correct("distinguir")("emos")).to.equal("distinguemos");
-      expect(correct("distinguir")("é")).to.equal("distingué");
-      expect(correct("distinguir")("ía")).to.equal("distinguía");
-      expect(correct("correr")("amos")).to.equal("corramos");
+    describe("-[ei]r verbs", () => {
+      it("sound preservation", () => {
+        expect(correct("distinguir")("emos")).to.equal("distinguemos");
+        expect(correct("distinguir")("é")).to.equal("distingué");
+        expect(correct("distinguir")("ía")).to.equal("distinguía");
+        expect(correct("correr")("amos")).to.equal("corramos");
+      });
+
+      it("-uir medial -y-", () => {
+        expect(correct("construir")("ía")).to.equal("construía");
+        expect(correct("construir")("iría")).to.equal("construiría");
+        expect(correct("argüir")("ía")).to.equal("argüía");
+        expect(correct("argüir")("iría")).to.equal("argüiría");
+      });
     });
   });
 
@@ -64,6 +83,7 @@ describe("regular ortho_correct", () => {
     it("should replace an i between vowels with a y", () => {
       expect(correct("caer")("ió")).to.equal("cayó");
       expect(correct("caer")("ieron")).to.equal("cayeron");
+      expect(correct("argüir")("iendo")).to.equal("arguyendo");
     });
 
     it("should drop an i between ll or ñ and a vowel", () => {

@@ -337,6 +337,8 @@ const verbs = [
   regular_verb("proteger"),
   regular_verb("distinguir"),
   regular_verb("leer"),
+  regular_verb("argüir"),
+  regular_verb("construir"),
   dipthongizing_verb("pensar"),
   dipthongizing_verb("oler"),
   dipthongizing_verb("errar"),

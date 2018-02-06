@@ -19,6 +19,11 @@ const stem_correct = infinitive => ending => {
       }
     }
   } else {
+    // This particular rule seems underspecified, given that there
+    // are very few /uir$/ examples.
+    if (/([^gq]u|ü)[ií].$/.test(infinitive) && !/^[ií]/.test(ending)) {
+      return stem + "y";
+    }
     if (/^[^eéií]/.test(ending)) {
       switch (stem.charAt(stem.length - 1)) {
         case "c":
@@ -62,8 +67,8 @@ const ending_correct = stem => ending => {
 
   if (
     !is_stressed_i &&
-    /[aáeéiíoóuú]$/.test(stem) &&
-    /^i[aáeéiíoóuú]/.test(ending)
+    /[aáeéiíoóuúü]$/.test(stem) &&
+    /^i[aáeéiíoóuúü]/.test(ending)
   ) {
     return "y" + ending.slice(1, ending.length);
   }
@@ -75,6 +80,13 @@ const ending_correct = stem => ending => {
   return ending;
 };
 
+// the ü is only allowed before an i or an e
+// but this is a stem modification that could happen in either correction
+// phase, so we do it at the end.
+// this assumes there's no more than one ü or gü[^eéií]
+const final_correct = conjugate =>
+  /gü[^eéií]/.test(conjugate) ? conjugate.replace("ü", "u") : conjugate;
+
 const ortho_correct = vowel_rasing => dipthongizing => infinitive => ending => {
   const stem_1 = infinitive.slice(0, infinitive.length - 2);
   const stem_2 = dipthongizing ? dipthongize(stem_1)(ending) : stem_1;
@@ -82,7 +94,7 @@ const ortho_correct = vowel_rasing => dipthongizing => infinitive => ending => {
     ? vowel_raise(dipthongizing)(stem_2)(ending)
     : stem_2;
   const stem_4 = stem_correct(stem_3 + infinitive.slice(-2))(ending);
-  return stem_4 + ending_correct(stem_4)(ending);
+  return final_correct(stem_4 + ending_correct(stem_4)(ending));
 };
 
 module.exports = { ortho_correct };
