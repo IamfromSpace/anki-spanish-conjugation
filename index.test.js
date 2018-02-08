@@ -80,10 +80,18 @@ describe("regular ortho_correct", () => {
       expect(correct("ver")("ío")).to.equal("vio");
     });
 
-    it("should replace an i between vowels with a y", () => {
+    it("should replace an unstressed i with a y between non-silent vowels", () => {
       expect(correct("caer")("ió")).to.equal("cayó");
       expect(correct("caer")("ieron")).to.equal("cayeron");
+      expect(correct("construir")("ió")).to.equal("construyó");
       expect(correct("argüir")("iendo")).to.equal("arguyendo");
+    });
+
+    it("should not replace an unstressed i with a y between a silent vowels", () => {
+      expect(correct("delinquir")("ió")).to.equal("delinquió");
+      expect(correct("delinquir")("ieron")).to.equal("delinquieron");
+      expect(correct("distinguir")("ió")).to.equal("distinguió");
+      expect(correct("distinguir")("ieron")).to.equal("distinguieron");
     });
 
     it("should drop an i between ll or ñ and a vowel", () => {

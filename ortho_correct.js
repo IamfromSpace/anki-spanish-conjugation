@@ -67,7 +67,7 @@ const ending_correct = stem => ending => {
 
   if (
     !is_stressed_i &&
-    /[aáeéiíoóuúü]$/.test(stem) &&
+    /([^gq]u|[aáeéiíoóúü])$/.test(stem) &&
     /^i[aáeéiíoóuúü]/.test(ending)
   ) {
     return "y" + ending.slice(1, ending.length);
